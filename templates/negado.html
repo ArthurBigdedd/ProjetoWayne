@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACESSO NEGADO - Wayne Industries SecureNet</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0b0c0e; 
+            color: #ff3333; 
+            font-family: 'Courier New', Courier, monospace; 
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .caixa_alerta {
+            background-color: #1a1b1e;
+            padding: 50px;
+            border-radius: 12px;
+            border: 2px solid #ff3333;
+            box-shadow: 0 0 25px rgba(255, 51, 51, 0.4);
+            max-width: 700px;
+            text-align: center;
+        }
+
+        .texto_suporte {
+            color: #dcdcdc !important;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .alerta_vermelho {
+            color: #ff3333 !important; 
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .subtitulo_branco {
+            color: #ffffff !important; 
+            letter-spacing: 1px;
+        }
+
+        .botao_retorno {
+            background-color: #121316;
+            color: #ffffff !important; 
+            border: 1px solid #ff3333;
+            padding: 12px 30px;
+            font-weight: bold;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .botao_retorno:hover {
+            background-color: #ff3333;
+            color: #000000 !important; 
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.7);
+        }
+
+        .icone_aviso {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #ffc107; 
+        }
+    </style>
+</head>
+<body class="bg-black">
+    <div class="caixa_alerta">
+        <div class="icone_aviso">⚠️</div>
+        <h1 class="display-3 alerta_vermelho mb-1">ALERTA VERMELHO</h1>
+        <h3 class="mb-4 subtitulo_branco">AUTORIZAÇÃO INSUFICIENTE</h3>
+        
+        <p class="texto_suporte">
+            A tentativa de violação de área secreta foi registrada nos sistemas de segurança da Wayne Industries e encaminhada diretamente ao Administrador.
+        </p>
+        
+        <div class="mt-5">
+            <a href="/dashboard" class="botao_retorno">
+                Voltar ao Painel Seguro
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

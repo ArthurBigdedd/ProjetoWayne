@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wayne Industries - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+
+        body { 
+            background-color: #0f1012; 
+            color: #ffffff; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navegador {
+            background-color: #16171a; 
+            border-bottom: 2px solid #2d3035;
+        }
+       
+        .conteiner_wayne { 
+            background-color: #16171a; 
+            border: 1px solid #2d3035; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+      
+        .texto_branco {
+            color: #cfd2d6 !important;
+        }
+
+        .texto_modificado {
+            color: #a0a5b0 !important;
+        }
+
+        .badge_admin { 
+            background-color: #dc3545; 
+            color: #ffffff; 
+        }
+
+        .badge_gerente { 
+            background-color: #fd7e14; 
+            color: #000000; 
+            font-weight: bold; 
+        }
+
+        .badge_funcionario { 
+            background-color: #0d6efd; 
+            color: #ffffff; 
+        }
+
+        .customizacao {
+            background-color: #1a1b1f !important;
+            color: #ffffff !important;
+        }
+
+        .customizacao th {
+            color: #ffc107 !important; 
+            border-bottom: 2px solid #2d3035 !important;
+            background-color: #1a1b1f !important; 
+        }
+
+        .customizacao td {
+            background-color: #1a1b1f !important; 
+            border-bottom: 1px solid #2d3035 !important;
+            color: #e2e8f0 !important;
+        }
+
+        .customizacao tr {
+            background-color: #1a1b1f !important;
+        }
+
+        .botao {
+            border: 1px solid #ffc107;
+            color: #ffc107;
+            text-decoration: none;
+        }
+
+        .botao:hover {
+            background-color: #ffc107;
+            color: #000000;
+            font-weight: 500;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-0">
+
+        <div class="navegador p-3 d-flex flex-wrap justify-content-between align-items-center">
+            <span class="fs-4 fw-bold text-light tracking-wider">EMPRESAS WAYNE</span>
+            <div class="d-flex align-items-center mt-2 mt-md-0">
+                <span class="me-3 texto_branco">Operador: <strong class="text-white">{{ usuario }}</strong> 
+                    <span class="badge {% if cargo == 'Administrador' %}badge_admin{% elif cargo == 'Gerente' %}badge_gerente{% else %}badge_funcionario{% endif %} ms-1">
+                        {{ cargo }}
+                    </span>
+                </span>
+                <a href="/logout" class="btn btn-outline-danger btn-sm">Sair do Sistema</a>
+            </div>
+        </div>
+
+        <div class="row mt-3 px-4">
+            <div class="col-12">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                <strong>Notificação:</strong> {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+
+        <div class="row p-4 m-0">
+            
+            <div class="col-lg-5 mb-4">
+                
+                <div class="card conteiner_wayne p-3 mb-4">
+                    <h5 class="text-warning mb-3 fw-bold">Atividades Recentes dos Funcionários</h5>
+                    <div class="list-group list-group-flush" style="max-height: 220px; overflow-y: auto;">
+                        {% for atividade in atividades %}
+                        <div class="list-group-item bg-dark text-white border-secondary px-0 py-2 d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold text-white fs-6">
+                                    {{ atividade.nome }}
+                                    <span class="badge {% if atividade.cargo == 'Administrador' %}badge_admin{% elif atividade.cargo == 'Gerente' %}badge_gerente{% else %}badge_funcionario{% endif %} ms-1" style="font-size: 0.7rem;">
+                                        {{ atividade.cargo }}
+                                    </span>
+                                </div>
+                                <small class="texto_modificado">{{ atividade.acao }}</small>
+                            </div>
+                            <span class="badge bg-secondary rounded-pill" style="font-size: 0.75rem;">{{ atividade.tempo }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card conteiner_wayne p-3 mb-4">
+                    <h5 class="text-warning mb-3 fw-bold">Controle de Acesso a Áreas</h5>
+                    <div class="list-group">
+                        {% for area in areas %}
+                        <div class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center border-secondary mb-2 rounded p-2">
+                            <div>
+                                <strong class="text-white d-block fs-6">{{ area.nome }}</strong>
+                                <small class="texto_modificado">Mínimo: <span class="badge bg-secondary">{{ area.nivel_minimo }}</span></small>
+                            </div>
+                            <a href="/acesso_area/{{ area.nivel_minimo }}" class="btn btn-sm botao py-1">Entrar</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card conteiner_wayne p-3">
+                    <h5 class="text-info mb-3 fw-bold">Atividades de Segurança em Tempo Real</h5>
+                    <div style="background-color: #121315; border-radius: 6px; padding: 10px; height: 220px; position: relative;">
+                        <canvas id="securityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card conteiner_wayne p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                        <h4 class="texto_branco fw-bold mb-0">Gestão de Recursos Internos</h4>
+                        {% if cargo in ['Gerente', 'Administrador'] %}
+                        <button class="btn btn-success btn-sm px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#modalAdicionar">+ Novo Recurso</button>
+                        {% endif %}
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table customizacao align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Recurso</th>
+                                    <th>Categoria</th>
+                                    <th>Status</th>
+                                    {% if cargo in ['Gerente', 'Administrador'] %}
+                                    <th class="text-end">Ações</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for recurso in recursos %}
+                                <tr>
+                                    <td class="texto_modificado">#{{ recurso.id }}</td>
+                                    <td><strong class="text-white">{{ recurso.nome }}</strong></td>
+                                    <td><span class="badge bg-dark border border-secondary text-light">{{ recurso.tipo }}</span></td>
+                                    <td>
+                                        <span class="badge {% if recurso.status == 'Operacional' %}bg-success text-white{% else %}bg-warning text-dark{% endif %} fw-bold">
+                                            {{ recurso.status }}
+                                        </span>
+                                    </td>
+                                    {% if cargo in ['Gerente', 'Administrador'] %}
+                                    <td class="text-end">
+                                        <button class="btn btn-warning btn-sm fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalEditar{{ recurso.id }}">
+                                            Editar
+                                        </button>
+
+                                        {% if cargo == 'Administrador' %}
+                                        <a href="/recurso/remover/{{ recurso.id }}" class="btn btn-danger btn-sm ms-2 fw-bold">Remover</a>
+                                        {% endif %}
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAdicionar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <form action="/recurso/adicionar" method="POST">
+                    <div class="modal-header border-secondary">
+                        <h5 class="modal-title text-warning fw-bold">Adicionar Recurso Wayne</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label texto_branco">Nome do Recurso</label>
+                            <input type="text" name="nome" class="form-control bg-black border-secondary text-white" required placeholder="Ex: Batwing">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label texto_branco">Categoria</label>
+                            <select name="tipo" class="form-select bg-black border-secondary text-white">
+                                <option value="Veículo">Veículo</option>
+                                <option value="Equipamento">Equipamento</option>
+                                <option value="Segurança">Dispositivo de Segurança</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label texto_branco">Status Inicial</label>
+                            <select name="status" class="form-select bg-black border-secondary text-white">
+                                <option value="Operacional">Operacional</option>
+                                <option value="Em Manutenção">Em Manutenção</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success fw-bold">Confirmar Adição</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% for recurso in recursos %}
+    <div class="modal fade" id="modalEditar{{ recurso.id }}" tabindex="-1" aria-labelledby="modalEditarLabel{{ recurso.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <form action="/recurso/atualizar/{{ recurso.id }}" method="POST">
+                    <div class="modal-header border-secondary">
+                        <h5 class="modal-title text-warning fw-bold" id="modalEditarLabel{{ recurso.id }}">Editar Recurso Wayne #{{ recurso.id }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label texto_branco">Nome do Recurso</label>
+                            <input type="text" name="nome" value="{{ recurso.nome }}" class="form-control bg-black border-secondary text-white" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label texto_branco">Categoria</label>
+                            <select name="tipo" class="form-select bg-black border-secondary text-white">
+                                <option value="Veículo" {% if recurso.tipo == 'Veículo' %}selected{% endif %}>Veículo</option>
+                                <option value="Equipamento" {% if recurso.tipo == 'Equipamento' %}selected{% endif %}>Equipamento</option>
+                                <option value="Segurança" {% if recurso.tipo == 'Segurança' %}selected{% endif %}>Dispositivo de Segurança</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label texto_branco">Status</label>
+                            <select name="status" class="form-select bg-black border-secondary text-white">
+                                <option value="Operacional" {% if recurso.status == 'Operacional' %}selected{% endif %}>Operacional</option>
+                                <option value="Em Manutenção" {% if recurso.status == 'Em Manutenção' %}selected{% endif %}>Em Manutenção</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning fw-bold text-dark">Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const ctx = document.getElementById('securityChart').getContext('2d');
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['08:00', '10:00', '12:00', '14:00', '16:00', 'Agora'],
+                datasets: [{
+                    label: 'Tentativas de Acesso / Minuto',
+                    data: [8, 15, 23, 12, 18, 5],
+                    borderColor: '#ffc107',
+                    backgroundColor: 'rgba(255, 193, 7, 0.08)',
+                    borderWidth: 2,
+                    tension: 0.35,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#cfd2d6' }
+                    }
+                },
+                scales: {
+                    x: { ticks: { color: '#a0a5b0' }, grid: { color: '#2d3035' } },
+                    y: { ticks: { color: '#a0a5b0' }, grid: { color: '#2d3035' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
