@@ -36,7 +36,7 @@ o informando que não é possível ele acessar aquela área.
 
 - Funcionário só consegue acessar o Escritório e o Refeitório.
 
-- O gerente tem quase os mesmos acessos do ADM, porém ele não pode remover produto e acessar a "Barcaverna".
+- O gerente tem quase os mesmos acessos do ADM, porém ele não pode remover produto e acessar a "Batcaverna".
 
 - O administrador ele possui botões para modificar os recursos,
 podendo mudar os dados do recurso, adicionar recursos e remover recursos (o ID sendo arrumado em ordem).
